@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBed,faCalendar,faPeopleGroup } from '@fortawesome/free-solid-svg-icons'
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import * as locales from 'react-date-range/dist/locale';
@@ -12,6 +13,16 @@ import'./header.scss'
 const Header = () => {
 const [handleSearch, setHandleSearch] = useState(false);
 const [openCalendar, setOpenCalendar] = useState(false);
+const [openConditions, setOpenConditions] = useState(false);
+const [dest, setDest] = useState("");
+console.log("dest: "+dest);
+const [conditions, setConditions] = useState(
+    {
+        adult: 1, //初始人數,房間數為一
+        children: 0, //可以不一定要有小孩:)
+        room: 1,
+    }
+);
 const [dates,setDates] = useState([{
     startDate:new Date(),
     endDate:new Date(),
@@ -21,7 +32,7 @@ const handleCounter=(e,v)=>{
     setConditions(prev=>{
         return{
             ...prev,
-            [e]:v==='increase'?condition[e]+1:condition[e]-1
+            [e]:v==='increase'?conditions[e]+1:conditions[e]-1
         }
     })
 }
@@ -38,7 +49,7 @@ const handleCounter=(e,v)=>{
             <div className='headerSearchBar'>
                 <div className='SearchBarItem'>
                     <FontAwesomeIcon icon={faBed}/>
-                    <input types="Search" placeholder='你要去哪裡' className='SearchInput'/>
+                    <input types="Search" placeholder='你要去哪裡' className='SearchInput' onChange={(e)=>setDest(e.target.value)}/>
                 </div>
 <div className="SearchBarItem">
          <FontAwesomeIcon icon={faCalendar} onClick={()=>setOpenCalendar(!openCalendar)}/>
@@ -60,32 +71,35 @@ const handleCounter=(e,v)=>{
             />}
     </div>
                 <div className='SearchBarItem'>
-                    <FontAwesomeIcon icon={faPeopleGroup}/>
-                    <span className='SearchText'>3位成人，2位小孩，1間房</span>
+                    <FontAwesomeIcon icon={faPeopleGroup} onClick={()=>setOpenConditions(!openConditions)}/>
+                    <span className='SearchText'>{conditions.adult}位成人，{conditions.children}位小孩，{conditions.room}間房</span>
+                      {openConditions &&
                     <div className="ConditionsContainer">
+              {/* 成人 */}
               <div className="condition">
                 成人
                 <div className="conditionCounter">
-                  <button className="conditionCounterButton"  >
+                  <button className="conditionCounterButton" onClick={()=>handleCounter("adult","decease")} disabled={conditions.adult <=1 } >
                     -
                   </button>
-                  <span className="number">1</span>
-                  <button className="conditionCounterButton" >
+                  <span className="number">{conditions.adult}</span>
+                  <button className="conditionCounterButton" onClick={()=>handleCounter("adult","increase")}>
                     +
                   </button>
                 </div>
               </div>
-              <div className="condition">
+              {/* 小孩*/}
+              <div className="condition" >
                 <span>小孩
                   <p>0-17 歲</p>
                 </span>
 
                 <div className="conditionCounter">
-                  <button className="conditionCounterButton"  >
+                  <button className="conditionCounterButton"  onClick={()=>handleCounter("children","decrease")} disabled={conditions.ch}>
                     -
                   </button>
-                  <span className="number">0</span>
-                  <button className="conditionCounterButton" >
+                  <span className="number">{conditions.children}</span>
+                  <button className="conditionCounterButton" onClick={()=>handleCounter("children","increase")}>
                     +
                   </button>
                 </div>
@@ -94,16 +108,17 @@ const handleCounter=(e,v)=>{
               <div className="condition">
                 房間
                 <div className="conditionCounter">
-                  <button className="conditionCounterButton" >
+                  <button className="conditionCounterButton" onClick={()=>handleCounter("room","decrease")} disabled={conditions.room<=1}>
                     -
                   </button>
-                  <span className="number">1</span>
-                  <button className="conditionCounterButton" >
+                  <span className="number">{conditions.room}</span>
+                  <button className="conditionCounterButton" onClick={()=>handleCounter("room","increase")}>
                     +
                   </button>
                 </div>
               </div>
-                    </div>
+              
+                    </div>}
                     <button className='SearchBarBtn' onClick={handleSearch}>搜尋</button>
                 </div>
             </div>

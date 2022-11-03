@@ -1,0 +1,20 @@
+
+.feature {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;//新增的 要上下置中一下
+    overflow: hidden;//新增的 超出範圍的部分自動隱藏
+    .container {
+        width: 100%;
+        max-width: 1024px;        
+        .listTitle {
+            padding: 15px 10px;            
+        }
+        .listItems {
+            padding: 0px 10px;
+            display: flex;//新增的 加上df item自然就會左右排
+            overflow-x:scroll; //新增的 並將超出範圍的部分設定可以滑動
+        }
+    }
+}
